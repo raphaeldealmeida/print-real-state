@@ -24,11 +24,12 @@ if ( ! class_exists( 'WpPrintRealState' ) ) {
 
 			}else{
 				add_filter( 'the_content', array( &$this, 'add_button' ) );
+				add_filter( 'wp', array( &$this, 'printer') );
 			}
 		}
 
 		public function add_button( $content ){
-			$button = '<a href="#">My PDF</a>';
+			$button = '<a href="'. add_query_arg( 'print-format', 'print' ) . '">My PDF</a>';
 
 			global $post;
 			if($post->post_type != 'estate_property')
@@ -37,8 +38,25 @@ if ( ! class_exists( 'WpPrintRealState' ) ) {
 			$content = '<div>' . $button . '</div>' . $content;
 			return $content;
 		}
+
+		public function printer($query){
+
+			global $pdfprnt_options_array, $posts, $post;
+			if ( $print  = ( isset( $_GET['print-format'] ) ? $_GET['print-format'] : null ) ) {
+				$html = '<div class="container">
+								<div class="title"><h1>' . $post->post_title . '</h1></div><br/>
+								<div class="content">' . apply_filters( 'the_content', $post->post_content ) . '</div>
+							</div>';
+				include __DIR__ . '/printed.php';
+				unset( $html );
+				die();
+
+			}
+		}
+
+		function generate_template( $content, $template = false, $isprint = false ) {
+			include __DIR__ . '/printed.php';
+		}
 	}
 	$wpPrintRealState = new WpPrintRealState();
 }
-
-
