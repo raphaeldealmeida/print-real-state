@@ -43,14 +43,20 @@ if ( ! class_exists( 'WpPrintRealState' ) ) {
 
 			global $pdfprnt_options_array, $posts, $post;
 			if ( $print  = ( isset( $_GET['print-format'] ) ? $_GET['print-format'] : null ) ) {
-				$html = '<div class="container">
-								<div class="title"><h1>' . $post->post_title . '</h1></div><br/>
-								<div class="content">' . apply_filters( 'the_content', $post->post_content ) . '</div>
-							</div>';
-				include __DIR__ . '/printed.php';
-				unset( $html );
-				die();
 
+				include ( 'mpdf/mpdf.php' );
+				$mpdf		=	new mPDF('+aCJK', 'A4-L');
+				$mpdf->SetAutoFont(AUTOFONT_ALL);
+				$mpdf->SetSubject( get_bloginfo( 'blogdescription' ) );
+				ob_start();
+				include __DIR__ . '/layout.php';
+				$html = ob_get_contents();
+				ob_clean();
+				$mpdf->WriteHTML($html);
+				$mpdf->Output();
+				unset( $html );
+				unset( $mpdf );
+				die();
 			}
 		}
 
