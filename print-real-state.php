@@ -29,7 +29,7 @@ if ( ! class_exists( 'WpPrintRealState' ) ) {
 		}
 
 		public function add_button( $content ){
-			$button = '<a href="'. add_query_arg( 'print-format', 'print' ) . '">My PDF</a>';
+			$button = '<a target="_blank" href="'. add_query_arg( 'print-format', 'print' ) . '"><img src="'.plugins_url('images/pdf.png', __FILE__).'"></a>';
 
 			global $post;
 			if($post->post_type != 'estate_property')
